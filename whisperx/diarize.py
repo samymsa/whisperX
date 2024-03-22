@@ -29,8 +29,11 @@ class DiarizationPipeline:
         diarize_df = pd.DataFrame(segments.itertracks(yield_label=True), columns=['segment', 'label', 'speaker'])
         diarize_df['start'] = diarize_df['segment'].apply(lambda x: x.start)
         diarize_df['end'] = diarize_df['segment'].apply(lambda x: x.end)
+        
         if return_embeddings:
-            return diarize_df, embeddings
+            speakers_with_embeddings = [(speaker, embeddings[s]) for s, speaker in enumerate(segments.labels())]
+            embeddings_df = pd.DataFrame(speakers_with_embeddings, columns=['speaker', 'embedding'])
+            return diarize_df, embeddings_df
         return diarize_df
 
 
